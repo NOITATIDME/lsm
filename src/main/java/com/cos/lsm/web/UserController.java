@@ -1,8 +1,15 @@
 package com.cos.lsm.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -29,15 +36,17 @@ public class UserController {
 	}
 	
 	@PostMapping("/join")
-	public String join(JoinReqDto dto) { // username=love&password=1234&email=love@nate.com
+	public String join(@Valid JoinReqDto dto, BindingResult bindingResult, Model model) { 
+		System.out.println("에러사이즈 : " + bindingResult.getFieldErrors().size());
 		
-		if(dto.getUsername() == null ||
-			dto.getPassword() == null ||
-			dto.getEmail() == null ||
-			dto.getUsername().equals("")||
-			dto.getPassword().equals("")||
-			dto.getEmail().equals("")
-			) {
+		if(bindingResult.hasErrors()) {
+			Map<String, String> errorMap = new HashMap<>();
+			for(FieldError error : bindingResult.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+				System.out.println("필드 : " + error.getField());
+				System.out.println("메시지 : " + error.getDefaultMessage());
+			}
+			model.addAttribute("errorMap", errorMap);
 			return "error/error";
 		}
 		
@@ -57,21 +66,32 @@ public class UserController {
 	
 
 	@PostMapping("login")
-	public String login(LoginReqDto dto) {
-		System.out.println(dto.getUsername());
-		System.out.println(dto.getPassword());
-		
-		User userEntity = userRepository.mLogin(dto.getUsername(), dto.getPassword());
-		
-		if(userEntity == null) {
-			return "reirect:/loginFrom";
-		} else {
+	public String login(@Valid LoginReqDto dto, BindingResult bindingResult, Model model) {
+
+			User userEntity =  userRepository.mLogin(dto.getUsername(), dto.getPassword());
 			
-			session.setAttribute("principal", userEntity);
-			return "redirect:/home";
-		}
+			System.out.println("에러사이즈:" + bindingResult.getFieldErrors().size());
+			
+			if( bindingResult.hasErrors() ) {
+				Map<String, String> errorMap = new HashMap<>();
+				for(FieldError error : bindingResult.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+					System.out.println("필드:" + error.getField());
+					System.out.println("메시지:" + error.getDefaultMessage());
+				}
+				model.addAttribute("errorMap", errorMap);
+				return "error/error";
+			} 
+
+
 
 		
+				session.setAttribute("principal", userEntity);
+				return "redirect:/home";
+
+
+
+
 	}
 
 	
