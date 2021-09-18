@@ -1,12 +1,12 @@
 server:
   port: 8080
- 
+
 spring:
   mvc:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-  
+ 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     username: cos
@@ -15,5 +15,13 @@ spring:
     
   jpa:
     hibernate:
-      ddl-auto: create  # create, none
+      ddl-auto: none  # create, none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true       
+          
+   
+   
+   
+   
+      

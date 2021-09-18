@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.cos.lsm.web.dto.JoinReqDto;
 import com.cos.lsm.domain.user.User;
 import com.cos.lsm.domain.user.UserRepository;
+import com.cos.lsm.web.dto.JoinReqDto;
 import com.cos.lsm.web.dto.LoginReqDto;
 
 @Controller
@@ -23,13 +23,24 @@ public class UserController {
 		this.session = session;
 	}
 	
-	@GetMapping("/home")
+	@GetMapping({"/","/home"})
 	public String home() {
 		return "home";
 	}
 	
 	@PostMapping("/join")
 	public String join(JoinReqDto dto) { // username=love&password=1234&email=love@nate.com
+		
+		if(dto.getUsername() == null ||
+			dto.getPassword() == null ||
+			dto.getEmail() == null ||
+			dto.getUsername().equals("")||
+			dto.getPassword().equals("")||
+			dto.getEmail().equals("")
+			) {
+			return "error/error";
+		}
+		
 		userRepository.save(dto.toEntity());
 		return "redirect:/loginForm"; // 리다이렉션 (300)
 	}

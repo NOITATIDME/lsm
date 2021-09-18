@@ -6,10 +6,13 @@
 <div class = "container">
 	<form action = "/login" method="post">
 		<div class="form-group">
-			<input type="text" name="username" class="form-control" placeholder="Enter username" >
+			<label>Username:</label>
+			<input type="text" name="username" class="form-control" placeholder="Enter username"  required="required">
 		</div>
+		<br>
 		<div class="form-group">
-			<input type="password" name="password" class="form-control" placeholder="Enter password" >
+			<label>Password:</label>
+			<input type="password" name="password" class="form-control" placeholder="Enter password"  required="required">
 		</div>
 		<button type="submit" class="btn btn-primary">로그인</button>
 	</form>
